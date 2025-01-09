@@ -18,14 +18,12 @@ from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from typing import List
 
-class Holiday_Item(BaseModel):
-    """Information about a holiday."""
+class holiday(BaseModel):
     date: str = Field(..., description="Date of holiday")
     name: str = Field(..., description="Name of holiday.")
 
-class Final_Result(BaseModel):
-    """Identifying information about all holidays in specific month."""
-    Result: List[Holiday_Item]
+class holiday_list(BaseModel):
+    Result: List[holiday]
 
 # Custom parser
 def extract_json(message: AIMessage) -> List[dict]:
@@ -65,14 +63,14 @@ def generate_hw01(question):
         [
             (
                 "system",
-                "當使用者針對特定年份的台灣行事曆做查詢, 請列出所有該月份的國定紀念日"
+                "當使用者對特定年份的台灣行事曆做查詢時, 請列出該月份所有的國定紀念日"
                 "Output your answer as JSON that  "
                 "matches the given schema: \`\`\`json\n{schema}\n\`\`\`. "
                 "Make sure to wrap the answer in \`\`\`json and \`\`\` tags",
             ),
             ("human", "{query}"),
         ]
-    ).partial(schema=Final_Result.model_json_schema())
+    ).partial(schema=holiday_list.model_json_schema())
 
     # Set up a parser + inject instructions into the prompt template.
     parser = JsonOutputParser(pydantic_object=Final_Result)
