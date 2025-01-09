@@ -1,3 +1,6 @@
+gpt_chat_version = 'gpt-4o'
+gpt_config = get_model_configuration(gpt_chat_version)
+
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate
 
