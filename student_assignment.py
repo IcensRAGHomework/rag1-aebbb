@@ -73,7 +73,7 @@ def generate_hw01(question):
     ).partial(schema=holiday_list.model_json_schema())
 
     # Set up a parser + inject instructions into the prompt template.
-    parser = JsonOutputParser(pydantic_object=Final_Result)
+    parser = JsonOutputParser(pydantic_object=holiday_list)
 
     chain = prompt | llm | parser
     response = chain.invoke({"query": question})
