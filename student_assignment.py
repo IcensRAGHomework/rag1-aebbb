@@ -215,7 +215,7 @@ def generate_hw04(question):
     baseball_grade_image_url = "https://raw.githubusercontent.com/IcensRAGHomework/rag1-aebbb/refs/heads/main/baseball.png?raw=true"
 
     score_response = llm.invoke([
-        SystemMessage(content="回答分數的數字"),
+        SystemMessage(content="只回答分數的數字"),
         HumanMessage(
             content=[
                 {"type": "image_url", "image_url": {"url": baseball_grade_image_url}},
