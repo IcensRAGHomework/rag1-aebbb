@@ -200,3 +200,32 @@ def generate_hw03(question2, question3):
     final_response = " { \"Result\": {  " + final_response + " }  }"
 
     return final_response
+
+
+def generate_hw04(question):
+    llm = AzureChatOpenAI(
+        model=gpt_config['model_name'],
+        deployment_name=gpt_config['deployment_name'],
+        openai_api_key=gpt_config['api_key'],
+        openai_api_version=gpt_config['api_version'],
+        azure_endpoint=gpt_config['api_base'],
+        temperature=gpt_config['temperature']
+    )
+
+    baseball_grade_image_url = "https://raw.githubusercontent.com/IcensRAGHomework/rag1-aebbb/refs/heads/main/baseball.png?raw=true"
+
+    score_response = llm.invoke([
+        SystemMessage(content="回答分數的數字"),
+        HumanMessage(
+            content=[
+                {"type": "image_url", "image_url": {"url": baseball_grade_image_url}},
+                {"type": "text", "text": question},
+            ],
+        )
+    ])
+
+    score_formatting = " \"score\": {0}"
+    final_response = score_formatting.format(score_response.content)
+    final_response = " { \"Result\": { " + final_response + " }  }"
+
+    return final_response
