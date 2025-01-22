@@ -80,3 +80,45 @@ def generate_hw01(question):
 
     # convert to json format
     return json.dumps(response, ensure_ascii = False)
+
+def generate_hw02(question):
+ 
+    llm = AzureChatOpenAI(
+        model=gpt_config['model_name'],
+        deployment_name=gpt_config['deployment_name'],
+        openai_api_key=gpt_config['api_key'],
+        openai_api_version=gpt_config['api_version'],
+        azure_endpoint=gpt_config['api_base'],
+        temperature=gpt_config['temperature']
+    )
+    query_year = llm.invoke([
+        SystemMessage(content="只回答問題中的年份並用數字表示"),
+        HumanMessage(content=question),
+    ]).content
+    query_month = llm.invoke([
+        SystemMessage(content="只回答問題中的月份並用數字表示"),
+        HumanMessage(content=question),
+    ]).content
+ 
+    api_url = "https://calendarific.com/api/v2/holidays?&api_key=JQeWnmY3xqc6y2jRtEhdL58tQY3lKdA5&country=TW&language=zh&year="+str(query_year)+"&month="+str(query_month)
+    webapi_response = requests.get(api_url)
+    cal_json = webapi_response.json()
+ 
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                "Output your answer as JSON that  "
+                "matches the given schema: \`\`\`json\n{schema}\n\`\`\`. "
+                "Make sure to wrap the answer in \`\`\`json and \`\`\` tags",
+            ),
+            ("human", "{inputdata}"),
+        ]
+    ).partial(schema=holiday_list.model_json_schema())
+ 
+    parser = JsonOutputParser(pydantic_object=holiday_list)
+ 
+    chain = prompt | llm
+    response = chain.invoke({"inputdata": cal_json})
+ 
+    return response.content[7:-3]
