@@ -1,19 +1,8 @@
-import json
-import traceback
-
-from model_configurations import get_model_configuration
-
-from langchain_openai import AzureChatOpenAI
-from langchain_core.messages import HumanMessage
-
-gpt_chat_version = 'gpt-4o'
-gpt_config = get_model_configuration(gpt_chat_version)
-
 from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
-from langchain_core.prompts import ChatPromptTemplate
-
 import json
-import re
+import requests
+ 
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from typing import List
